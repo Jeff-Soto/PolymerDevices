@@ -10,25 +10,69 @@
 
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import './shared-styles.js';
+import "@polymer/iron-ajax/iron-ajax";
+import "@vaadin/vaadin-grid/vaadin-grid.js";
+import "@vaadin/vaadin-button/vaadin-button.js";
 
 class Devices extends PolymerElement {
+
+  static get properties() {
+    return {
+      devices: {
+        type: Array,
+        value: []
+      }
+    }
+  }
+
   static get template() {
     return html`
       <style include="shared-styles">
         :host {
           display: block;
-
           padding: 10px;
         }
       </style>
 
-      <div class="card">
-        <div class="circle">1</div>
-        <h1>View One</h1>
-        <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-        <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-      </div>
+      <iron-ajax
+        auto
+        url="http://localhost:3000/api/devices"
+        on-response="handleResponse"
+        on-error="handleError" ></iron-ajax>
+
+        <!-- The array is set as the <vaadin-grid>'s "items" property -->
+        <vaadin-grid aria-label="Basic Binding Example" items="[[devices]]">
+
+          <vaadin-grid-column width="60px" flex-grow="0">
+            <template class="header">ID #</template>
+            <template>[[item.id]]</template>
+          </vaadin-grid-column>
+
+          <vaadin-grid-column>
+            <template class="header">Name</template>
+            <template>[[item.name]]</template>
+          </vaadin-grid-column>
+
+          <vaadin-grid-column width="8em">
+            <template class="header">Action</template>
+            <template>
+              <vaadin-button>View Device</vaadin-button>
+            </template>
+          </vaadin-grid-column>
+
+        </vaadin-grid>
+
     `;
+  }
+
+  // Event handler for the all devices GET request
+  handleResponse(e) {
+    this.devices = e.detail.__data.response;
+  }
+
+  // Error handler for all devices GET request, logging for now.
+  handleError(e) {
+    console.log(e);
   }
 }
 
