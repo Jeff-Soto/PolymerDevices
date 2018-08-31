@@ -32,6 +32,18 @@ setPassiveTouchGestures(true);
 setRootPath(MyAppGlobals.rootPath);
 
 class MyApp extends PolymerElement {
+
+  //I am providing this method to all components that want to change the browser url.
+  // Will use in devices view to update url.
+  connectedCallback(){
+    super.connectedCallback();
+    window.myRouter = {
+      navigate: (path) => {
+      this.set('route.path', path);
+      }
+    };
+  }
+
   static get template() {
     return html`
       <style>
@@ -99,7 +111,7 @@ class MyApp extends PolymerElement {
           </app-header>
 
           <iron-pages selected="[[page]]" attr-for-selected="name" role="main">
-            <my-devices name="devices"></my-devices>
+            <my-devices name="devices" route="[[subroute]]"></my-devices>
             <my-view404 name="view404"></my-view404>
           </iron-pages>
         </app-header-layout>
