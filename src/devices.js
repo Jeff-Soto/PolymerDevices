@@ -13,6 +13,7 @@ import './shared-styles.js';
 import "@polymer/iron-ajax/iron-ajax";
 import "@vaadin/vaadin-grid/vaadin-grid.js";
 import "@vaadin/vaadin-button/vaadin-button.js";
+import "@vaadin/vaadin-dialog/vaadin-dialog.js";
 import "@polymer/app-route/app-route.js";
 
 class Devices extends PolymerElement {
@@ -28,7 +29,12 @@ class Devices extends PolymerElement {
         type: Object,
         observer: "_onRouteDataChanged"
       },
-      subroute: Object
+      subroute: Object,
+      showDialog: {
+        type: Boolean,
+        value: false
+      },
+      device: Object
     }
   }
 
@@ -77,6 +83,14 @@ class Devices extends PolymerElement {
 
         </vaadin-grid>
 
+        <vaadin-dialog id="dialog" opened="{{showDialog}}" on-opened-changed="onOpenChanged">
+          <template>
+            <div>{{device.id}}</div>
+            <div>{{device.name}}</div>
+            <div>{{device.description}}</div>
+          </template>
+        </vaadin-dialog>
+
     `;
   }
 
@@ -118,6 +132,11 @@ class Devices extends PolymerElement {
       this.showDialog = true;
       window.myRouter.navigate('devices/' + this.device.id);
     }
+  }
+
+  // when dialog box is closed, update url
+  onOpenChanged() {
+    window.myRouter.navigate('devices');
   }
 }
 
