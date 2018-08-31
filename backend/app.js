@@ -31,8 +31,11 @@ app.get("/api/devices", (req, res) => {
   res.json(devices);
 });
 
-app.get('/', (req, res) => {
-  res.send('server root');
+app.get("/api/devices/:deviceId", (req, res) => {
+  // send only 1 item from array using deviceId
+  let deviceID = req.params.deviceId;
+  let device = devices.findIndex(device => device.id == deviceID);
+  res.json(devices[device]);
 });
 
 app.listen(3000);
