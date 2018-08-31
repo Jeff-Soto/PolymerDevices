@@ -104,7 +104,7 @@ class Devices extends PolymerElement {
     const deviceID = this.routeData.deviceId;
     // conditionally set URL and fire AJAX for single device
     if (deviceID){
-      this.$.fetchDeviceAjax.url = "http://localhost:3001/api/devices/" + deviceID;
+      this.$.fetchDeviceAjax.url = "http://localhost:3000/api/devices/" + deviceID;
       this.$.fetchDeviceAjax.generateRequest();
     }
   }
