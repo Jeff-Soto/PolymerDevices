@@ -13,6 +13,7 @@ import './shared-styles.js';
 import "@polymer/iron-ajax/iron-ajax";
 import "@vaadin/vaadin-grid/vaadin-grid.js";
 import "@vaadin/vaadin-button/vaadin-button.js";
+import "@polymer/app-route/app-route.js";
 
 class Devices extends PolymerElement {
 
@@ -40,6 +41,11 @@ class Devices extends PolymerElement {
         on-response="handleResponse"
         on-error="handleError" ></iron-ajax>
 
+        
+
+        <app-route route="{{route}}" pattern="/:deviceId" data="{{routeData}}">
+        </app-route>
+
         <!-- The array is set as the <vaadin-grid>'s "items" property -->
         <vaadin-grid aria-label="Basic Binding Example" items="[[devices]]">
 
@@ -56,7 +62,7 @@ class Devices extends PolymerElement {
           <vaadin-grid-column width="8em">
             <template class="header">Action</template>
             <template>
-              <vaadin-button>View Device</vaadin-button>
+              <vaadin-button on-click="viewDevice">View Device</vaadin-button>
             </template>
           </vaadin-grid-column>
 
@@ -73,6 +79,14 @@ class Devices extends PolymerElement {
   // Error handler for all devices GET request, logging for now.
   handleError(e) {
     console.log(e);
+  }
+
+  // Event handler for the View Device button click event.
+  viewDevice(e) {
+    // take data from button event and assign it to our device prop
+    this.device = e.model.item;
+    // change the url to subroute with device ID
+    window.myRouter.navigate('devices/' + this.device.id);
   }
 }
 
