@@ -22,7 +22,13 @@ class Devices extends PolymerElement {
       devices: {
         type: Array,
         value: []
-      }
+      },
+      route: Object,
+      routeData: {
+        type: Object,
+        observer: "_onRouteDataChanged"
+      },
+      subroute: Object
     }
   }
 
@@ -41,7 +47,10 @@ class Devices extends PolymerElement {
         on-response="handleResponse"
         on-error="handleError" ></iron-ajax>
 
-        
+        <iron-ajax
+          id="fetchDeviceAjax"
+          on-response="handleSingleDeviceResponse"
+          on-error="handleSingleDeviceError" ></iron-ajax>
 
         <app-route route="{{route}}" pattern="/:deviceId" data="{{routeData}}">
         </app-route>
@@ -87,6 +96,28 @@ class Devices extends PolymerElement {
     this.device = e.model.item;
     // change the url to subroute with device ID
     window.myRouter.navigate('devices/' + this.device.id);
+  }
+
+  // Observer for Route Data. Will fire whenever route data is changed.
+  _onRouteDataChanged() {
+    // create Device ID and set it equal to the routeData's ID
+    const deviceID = this.routeData.deviceId;
+    // conditionally set URL and fire AJAX for single device
+    if (deviceID){
+      this.$.fetchDeviceAjax.url = "http://localhost:3001/api/devices/" + deviceID;
+      this.$.fetchDeviceAjax.generateRequest();
+    }
+  }
+
+  // Event handler for single device GET reuest
+  handleSingleDeviceResponse(e) {
+    // set this components device to equal the response.
+    this.device = e.detail.__data.response;
+    // conditionally set show dialog box and change url
+    if(this.device){
+      this.showDialog = true;
+      window.myRouter.navigate('devices/' + this.device.id);
+    }
   }
 }
 
